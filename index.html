@@ -1,0 +1,150 @@
+<html>
+	<head>
+		<meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+        <title>Web Triggers Sample Javascript Web Page</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width">
+        <link rel="stylesheet" type="text/css" href="./css/bootstrap.css">
+        <script src="./scripts/jquery-3.1.0.min.js"></script>
+        <script src="./scripts/webTriggersSample.js"></script>
+
+        <style>
+        	body {
+        		font-family: "Helvetica Neue",Helvetica,Arial,sans-serif
+        		font-size: 12px;
+        		color: #0f71b7;
+        	}
+        	p {
+        		color: #999999;
+        	}
+        	img {
+        		max-width: 100%;
+        	}
+        	.row {
+        		margin-top: 10px;
+        	}	
+        	.buttonRow {
+        		margin-top: 10px;
+        	}
+        	pre {
+  				overflow: auto;
+			}
+			pre > code {
+  				display: block;
+  				word-wrap: normal;
+			}
+    	</style>
+	</head>
+	<body>
+		<div class="container-fluid">
+			<div class="row">
+				<div class="col-md-2">
+					<img src="./images/logo.png">
+				</div>
+				<div class="col-md-12">
+					<h3>Signagelive Sample Web Triggers Javascript</h3>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="row">
+					<div class="col-md-12">
+						<p>
+							Use the fields below to call the Signagelive Web Triggers API, using the credentials you have been provided, using a simple Javascript Ajax call.
+						</p>
+						<p>
+							You will need to retrieve the Trigger ID and Player or Group IDs using the correct calls to the Web Triggers API.
+						</p>
+						<p>
+							The code snippet on the right hand side shows how the javascript method which is called when clicking the "Trigger" button below.
+						</p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<label for="apiUrl">API Url</label>
+                		<input type="text" class="form-control input-sm" required id="apiUrl" value="https://wbtapi.signagelive.com">
+            		</div>
+        		</div>
+				<div class="row">
+					<div class="col-md-12">
+						<label for="apiID">API ID</label>
+                		<input type="text" class="form-control input-sm" required id="apiID" value="4db072f6">
+            		</div>
+        		</div>
+        		<div class="row">
+					<div class="col-md-12">
+						<label for="apiKey">API Key</label>
+                		<input type="text" class="form-control input-sm" required id="apiKey" value="67643f995ddf">
+            		</div>
+        		</div>
+        		<div class="row">
+					<div class="col-md-12">
+						<label for="networkID">Network ID</label>
+                		<input type="text" class="form-control input-sm" required id="networkID" value="10643">
+            		</div>
+        		</div>
+        		<div class="row">
+					<div class="col-md-12">
+						<label for="triggerID">Trigger ID</label>
+                		<input type="text" class="form-control input-sm" required id="triggerID" value="6">
+            		</div>
+        		</div>
+        		<div class="row">
+					<div class="col-md-12">
+						<label for="players">Players (Comma seperated list of ID's)</label>
+                		<input type="text" class="form-control input-sm" id="players" value="26961,27753">
+            		</div>
+        		</div>
+        		<div class="row">
+					<div class="col-md-12">
+						<label for="groups">Groups (Comma seperated list of ID's)</label>
+                		<input type="text" class="form-control input-sm" id="groups">
+            		</div>
+        		</div>
+        		<div class="row buttonRow">
+					<div class="col-md-12">
+						<button type="submit" class="btn btn-primary pull-right" onclick="trigger()">Trigger</button>
+            		</div>
+        		</div>
+    		</div>
+    		<div class="col-md-6">
+    			<label for="javascript">Ajax Javascript</label>
+    			<pre>
+        			<code id="javascript" class="language-javascript" contenteditable>
+        	function trigger() {
+				let self = this;
+				self.apiURL = $('#apiUrl')[0].value;
+				self.apiID = $('#apiID')[0].value;
+				self.apiKey = $('#apiKey')[0].value;
+				self.networkID = $('#networkID')[0].value;
+	
+				self.message = {};
+				self.message.interrupt = $('#triggerID')[0].value;
+				self.message.players = $('#players')[0].value.split(',');
+				self.message.groups = $('#groups')[0].value.split(',');
+
+        		$.ajax({
+        			url: self.apiURL + "/networks/" + self.networkID + "/messages",
+        			type: 'POST',
+        			dataType: 'json',
+        			data: JSON.stringify(self.message),
+        			contentType: "application/json",
+        			success: function(json) {
+						alert("Trigger successfully sent");
+					},
+        			error: function(e) { 
+        				alert("Trigger failed: " + e.responseJSON.Message);    
+        			},
+					beforeSend: function(xhr) {
+        				xhr.setRequestHeader('X-SIGNAGELIVE-WBI-APP-ID', self.apiID);
+        				xhr.setRequestHeader('X-SIGNAGELIVE-WBI-APP-KEY', self.apiKey);
+        			}
+    			});
+    		}
+        			</code>
+    			</pre>
+    		</div>
+    	</div>
+	</body>
+</html>
